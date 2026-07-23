@@ -247,7 +247,7 @@ if(g.indexOf("apple")>=0||g.indexOf("metal")>=0){if(navigator.userAgent.indexOf(
 // Improve Intel Mac GPU detection
 if(g.indexOf("radeon")>=0||g.indexOf("amd")>=0){if(g.indexOf("pro")>=0)MACHINE.vram=4;if(g.indexOf("vega")>=0)MACHINE.vram=8;}
 // Map common GPUs to VRAM
-if(g.indexOf("m1")>=0||g.indexOf("m2"))MACHINE.vram=4;if(g.indexOf("m3")>=0)MACHINE.vram=6;if(g.indexOf("m4")>=0)MACHINE.vram=8;
+if(g.indexOf("m1")>=0||g.indexOf("m2")>=0)MACHINE.vram=4;if(g.indexOf("m3")>=0)MACHINE.vram=6;if(g.indexOf("m4")>=0)MACHINE.vram=8;
 if(g.indexOf("ultra")>=0)MACHINE.vram*=2;if(g.indexOf("max")>=0)MACHINE.vram*=2;
 if(g.indexOf("apple")>=0||g.indexOf("m1")>=0||g.indexOf("m2")>=0||g.indexOf("m3")>=0||g.indexOf("m4")>=0){
   if(MACHINE.gpu.indexOf("Apple")<0)MACHINE.gpu="Apple "+MACHINE.gpu;
@@ -354,17 +354,33 @@ function benchmark(idx,btn){
   dh+="</table>";
   dh+="<div style='text-align:center;padding:10px;border-radius:6px;background:"+verdictColor+"22;border:2px solid "+verdictColor+"'>";
   dh+="<strong style='color:"+verdictColor+";font-size:14px'>"+verdict+"</strong>";
-  dh+="";
+  dh+="</div>";
+  document.getElementById("benchDetails").innerHTML=dh;
+  document.getElementById("benchDetails").style.display="block";
+  btn.disabled=false;
+  btn.textContent="⚡ Run Benchmark";
+}
+
+function searchSteam(){
+  var q=document.getElementById("addSearch").value;
+  if(!q)return;
+  var r=document.getElementById("searchResults");
+  r.style.display="block";
+  r.innerHTML="Searching...";
   var proxy="https://api.allorigins.win/get?url=";
   var url="https://store.steampowered.com/api/storesearch/?term="+encodeURIComponent(q)+"&cc=US&l=en";
   var x=new XMLHttpRequest();x.open("GET",proxy+encodeURIComponent(url),true);
+  x.timeout=15000;
+  x.ontimeout=function(){r.innerHTML="Search timed out. Try again.";};
+  x.onerror=function(){r.innerHTML="Search failed. Try again.";};
   x.onload=function(){try{var d=JSON.parse(x.responseText);var items=JSON.parse(d.contents).items||[];
     if(!items.length){r.innerHTML="No results.";return;}
     var h="";for(var i=0;i<Math.min(items.length,10);i++){var item=items[i];if(item.type!=="app"||!item.id)continue;
-      h+="<div style=\'display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px\'><span>"+item.name+" <small style=\'color:var(--dim)\'>("+item.id+")</small></span>";
-      h+="<button class=\'ad\' data-id=\'"+item.id+"\' style=\'margin-left:auto;padding:4px 10px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer\'>+ Add</button></div>";}
+      h+="<div style=\"display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px\"><span>"+item.name+" <small style=\"color:var(--dim)\">("+item.id+")</small></span>";
+      h+="<button class=\"ad\" data-id=\""+item.id+"\" style=\"margin-left:auto;padding:4px 10px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer\">+ Add</button></div>";}
     r.innerHTML=h;}catch(e){r.innerHTML="Search error.";}};
-  x.send();}
+  x.send();
+}
 
 function addGame(id,name,btn){
   if(!id)return;
