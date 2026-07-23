@@ -62,7 +62,13 @@ header .bar .s{font-size:12px;color:var(--dim);padding:3px 10px;border-radius:12
 <header><h1>🎮 iMac PC Games Compatibility</h1>
 <p id="subtitle">Loading <span id="gameCount">0</span> games...</p>
 <div class="bar" id="bar"></div><div class="mach" id="machineSpecs"><span>Detecting...</span></div></header>
-<div class="ctrls">
+<div style="display:flex;gap:8px;padding:8px 28px;background:var(--bg2);border-bottom:1px solid var(--border);align-items:center"><input type="text" id="addSearch" placeholder="Add a game: search Steam..." onkeydown="if(event.key==='Enter')searchSteam()" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--text);font-size:13px;outline:none"><button onclick="searchSteam()" style="padding:8px 16px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;cursor:pointer">Search</button></div><div id="searchResults" style="display:none;padding:0 28px 8px;background:var(--bg2);border-bottom:1px solid var(--border)"></div><div style="padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border)">
+<div style="display:flex;gap:8px">
+<input type="text" id="addSearch" placeholder="Search Steam to add a game..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:13px;outline:none">
+<button onclick="searchSteam()" style="padding:8px 16px;border:none;border-radius:6px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:500">Search</button>
+</div>
+<div id="searchResults" style="margin-top:6px;display:none"></div>
+</div><div class="ctrls">
 <input type="text" id="q" placeholder="Search..." oninput="A()">
 <select id="s" onchange="A()"><option value="sc">Score</option><option value="az">A-Z</option><option value="ny">Newest</option><option value="pop">Popular</option></select>
 <select id="ft" onchange="A()"><option value="">Tiers</option><option value="PLATINUM">PLATINUM</option><option value="GOLD">GOLD</option><option value="SILVER">SILVER</option><option value="BRONZE">BRONZE</option><option value="BROKEN">BROKEN</option></select>
@@ -235,6 +241,19 @@ if(ext)MACHINE.gpu=gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)||MACHINE.gpu;}}c
 if(navigator.deviceMemory)MACHINE.ram=navigator.deviceMemory;
 if(navigator.hardwareConcurrency)MACHINE.cpu=navigator.hardwareConcurrency+" cores";
 var g=MACHINE.gpu.toLowerCase();
+// Improve Apple GPU naming
+if(g.indexOf("apple")>=0||g.indexOf("metal")>=0){if(navigator.userAgent.indexOf("M1")>=0)MACHINE.gpu="Apple M1";else if(navigator.userAgent.indexOf("M2")>=0)MACHINE.gpu="Apple M2";else if(navigator.userAgent.indexOf("M3")>=0)MACHINE.gpu="Apple M3";else if(navigator.userAgent.indexOf("M4")>=0)MACHINE.gpu="Apple M4";else MACHINE.gpu="Apple Silicon";g=MACHINE.gpu.toLowerCase();}
+// Improve Intel Mac GPU detection
+if(g.indexOf("radeon")>=0||g.indexOf("amd")>=0){if(g.indexOf("pro")>=0)MACHINE.vram=4;if(g.indexOf("vega")>=0)MACHINE.vram=8;}
+// Map common GPUs to VRAM
+if(g.indexOf("m1")>=0||g.indexOf("m2"))MACHINE.vram=4;if(g.indexOf("m3")>=0)MACHINE.vram=6;if(g.indexOf("m4")>=0)MACHINE.vram=8;
+if(g.indexOf("ultra")>=0)MACHINE.vram*=2;if(g.indexOf("max")>=0)MACHINE.vram*=2;
+if(g.indexOf("apple")>=0||g.indexOf("m1")>=0||g.indexOf("m2")>=0||g.indexOf("m3")>=0||g.indexOf("m4")>=0){
+  if(MACHINE.gpu.indexOf("Apple")<0)MACHINE.gpu="Apple "+MACHINE.gpu;
+  if(!navigator.deviceMemory)MACHINE.ram=16;
+  MACHINE.vram=4;
+  if(g.indexOf("pro")>=0||g.indexOf("max")>=0||g.indexOf("ultra")>=0)MACHINE.vram=8;
+}
 if(g.indexOf("5300")>=0||g.indexOf("5500")>=0||g.indexOf("560")>=0||g.indexOf("m1")>=0||g.indexOf("m2")>=0)MACHINE.vram=4;
 if(g.indexOf("5700")>=0||g.indexOf("570")>=0||g.indexOf("580")>=0||g.indexOf("vega")>=0)MACHINE.vram=8;
 if(g.indexOf("pro")>=0&&g.indexOf("vega")>=0)MACHINE.vram=16;
@@ -362,7 +381,7 @@ function updateBenchmarkFilter(){
   fb.options[0].text="Benchmark: All ("+G.length+")";
   fb.options[1].text="Can Run ("+counts.can+")";
   fb.options[2].text="Will Not Run ("+counts.cant+")";
-  fb.options[3].text="Not Tested ("+counts.unknown+")";
+  if(fb.options[3])if(fb.options.length>3)fb.options[3].text="Not Tested ("+counts.unknown+")";
 }
 
 // Add benchmark filter to filter function
@@ -403,7 +422,19 @@ var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click
 
 function clearSearch(){var as=document.getElementById("addSearch");var sr=document.getElementById("searchResults");if(as)as.value="";if(sr){sr.innerHTML="";sr.classList.remove("show");}}
 
-function searchSteam(){var as=document.getElementById("addSearch");if(!as)return;var q=as.value.trim();
+function searchSteam(){var as=document.getElementById("addSearch");if(!as)return;var q=as.value.trim();if(!q)return;
+  var r=document.getElementById("searchResults");if(!r)return;
+  r.style.display="block";r.innerHTML='<div class="r" style="color:var(--dim)">Searching...</div>';
+  var proxy="https://api.allorigins.win/get?url=";
+  var url="https://store.steampowered.com/api/storesearch/?term="+encodeURIComponent(q)+"&cc=US&l=en";
+  var x=new XMLHttpRequest();x.open("GET",proxy+encodeURIComponent(url),true);
+  x.onload=function(){try{var d=JSON.parse(x.responseText);var items=JSON.parse(d.contents).items||[];
+    if(!items.length){r.innerHTML='<div class="r" style="color:var(--dim)">No results found.</div>';return;}
+    var h="";for(var i=0;i<Math.min(items.length,10);i++){var item=items[i];if(item.type!=="app"||!item.id)continue;
+      h+='<div class="r"><span class="nm">'+item.name+' <small>(app '+item.id+')</small></span>';
+      h+='<button style="background:var(--accent);color:#fff" onclick="addGame('+item.id+',''+item.name.replace(/'/g,"")+'',this)">+ Add</button></div>';}
+    r.innerHTML=h;}catch(e){r.innerHTML='<div class="r" style="color:var(--dim)">Search error.</div>';}};
+  x.send();}
   if(!q)return;
   var r=document.getElementById("searchResults");
   r.innerHTML="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:4px'><span style='font-size:12px;color:var(--dim)'></span><span onclick='clearSearch()' style='cursor:pointer;color:var(--dim);font-size:14px' title='Clear'>✕</span></div><div class='r' style='color:var(--dim)'>Searching...</div>";
