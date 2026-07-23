@@ -81,6 +81,7 @@ header .bar .s{font-size:12px;color:var(--dim);padding:3px 10px;border-radius:12
 <div class="empty" id="em" style="display:none">No games match.</div>
 <div class="md" id="modal"><div class="box"><div class="mh"><div><h2 id="mt"></h2><div class="sub" id="ms"></div></div><span class="close" onclick="cm()">\u2715</span></div><div class="mb" id="mb"></div></div></div>
 <script>
+function imgError(e){e.style.display="none";if(e.nextSibling)e.nextSibling.style.display="flex";}
 var TC={PLATINUM:"#3fb950",GOLD:"#d29922",SILVER:"#58a6ff",BRONZE:"#f85149",BROKEN:"#484f58"};
 var G=[],P=1,Z=50,H=[],ID={};
 
@@ -124,7 +125,7 @@ function B(){var b=document.getElementById("bar"),ts=["PLATINUM","GOLD","SILVER"
 function R(){
   var a=F();Z=parseInt(document.getElementById("ps").value)||50;var t=Math.ceil(a.length/Z);if(P>t)P=t||1;var s=(P-1)*Z,p=a.slice(s,s+Z),gr=document.getElementById("grid"),em=document.getElementById("em");
   if(!p.length){gr.innerHTML="";em.style.display="block";}else{em.style.display="none";var h="";for(var i=0;i<p.length;i++){var x=p[i],g=x.g,v=x.v;
-    var img=g.im?'<img src="'+g.im+'" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="ph" style="display:none;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>':'<div class="ph" style="display:flex;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>';
+    var img=g.im?'<img src="'+g.im+'" alt="" loading="lazy" onerror="imgError(this)"><div class="ph" style="display:none;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>':'<div class="ph" style="display:flex;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>';
     var st="";for(var k=0;k<g.st.length;k++)st+='<a href="'+g.st[k].u+'" target="_blank" style="background:'+g.st[k].c+'">'+g.st[k].n+"</a> ";
     h+='<div class="card" data-i="'+x.i+'"><div class="top">'+img+'</div><div class="body">';
     h+='<div class="hd"><span class="badge" style="background:'+TC[g.ti]+'22;color:'+TC[g.ti]+'">'+g.ti+'</span><span class="sc" style="color:'+TC[g.ti]+'">'+v+'/100</span></div>';
