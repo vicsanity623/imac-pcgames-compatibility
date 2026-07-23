@@ -399,20 +399,11 @@ document.getElementById("modal").addEventListener("click",function(e){
   var y=e.target.closest(".ytbtn");
   if(y)window.open("https://www.youtube.com/results?search_query="+y.getAttribute("data-query"),"_blank");
 });
-document.getElementById("searchResults").addEventListener("click",function(e){
-  var btn=e.target.closest(".ad");
-  if(!btn||btn.disabled)return;
-  addGame(btn.getAttribute("data-id"),"",btn);
-});
+var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click",function(e){var btn=e.target.closest(".ad");if(btn&&!btn.disabled)addGame(btn.getAttribute("data-id"),"",btn);});
 
-function clearSearch(){
-  document.getElementById("addSearch").value="";
-  document.getElementById("searchResults").innerHTML="";
-  document.getElementById("searchResults").classList.remove("show");
-}
+function clearSearch(){var as=document.getElementById("addSearch");var sr=document.getElementById("searchResults");if(as)as.value="";if(sr){sr.innerHTML="";sr.classList.remove("show");}}
 
-function searchSteam(){
-  var q=document.getElementById("addSearch").value.trim();
+function searchSteam(){var as=document.getElementById("addSearch");if(!as)return;var q=as.value.trim();
   if(!q)return;
   var r=document.getElementById("searchResults");
   r.innerHTML="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:4px'><span style='font-size:12px;color:var(--dim)'></span><span onclick='clearSearch()' style='cursor:pointer;color:var(--dim);font-size:14px' title='Clear'>✕</span></div><div class='r' style='color:var(--dim)'>Searching...</div>";
@@ -436,7 +427,8 @@ function searchSteam(){
 }
 
 function addGame(id,name,btn){
-  if(!btn||!id)return;
+  if(!id)return;
+  if(!btn){alert("Add Game is only available in the local version.\n\nRun: ./wineport add-game add "+id);return;}
   btn.disabled=true;btn.textContent="Adding...";
   var x=new XMLHttpRequest();
   x.open("POST","/api/add-game/"+id,true);
