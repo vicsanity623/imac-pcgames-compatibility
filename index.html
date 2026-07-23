@@ -422,40 +422,20 @@ var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click
 
 function clearSearch(){var as=document.getElementById("addSearch");var sr=document.getElementById("searchResults");if(as)as.value="";if(sr){sr.innerHTML="";sr.classList.remove("show");}}
 
+
 function searchSteam(){var as=document.getElementById("addSearch");if(!as)return;var q=as.value.trim();if(!q)return;
   var r=document.getElementById("searchResults");if(!r)return;
-  r.style.display="block";r.innerHTML='<div class="r" style="color:var(--dim)">Searching...</div>';
+  r.style.display="block";r.innerHTML="<div style=\'color:var(--dim);padding:8px\'>Searching...</div>";
   var proxy="https://api.allorigins.win/get?url=";
   var url="https://store.steampowered.com/api/storesearch/?term="+encodeURIComponent(q)+"&cc=US&l=en";
   var x=new XMLHttpRequest();x.open("GET",proxy+encodeURIComponent(url),true);
   x.onload=function(){try{var d=JSON.parse(x.responseText);var items=JSON.parse(d.contents).items||[];
-    if(!items.length){r.innerHTML='<div class="r" style="color:var(--dim)">No results found.</div>';return;}
+    if(!items.length){r.innerHTML="No results.";return;}
     var h="";for(var i=0;i<Math.min(items.length,10);i++){var item=items[i];if(item.type!=="app"||!item.id)continue;
-      h+='<div class="r"><span class="nm">'+item.name+' <small>(app '+item.id+')</small></span>';
-      h+='<button style="background:var(--accent);color:#fff" onclick="addGame('+item.id+',''+item.name.replace(/'/g,"")+'',this)">+ Add</button></div>';}
-    r.innerHTML=h;}catch(e){r.innerHTML='<div class="r" style="color:var(--dim)">Search error.</div>';}};
+      h+="<div style=\'display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px\'><span>"+item.name+" <small style=\'color:var(--dim)\'>("+item.id+")</small></span>";
+      h+="<button class=\'ad\' data-id=\'"+item.id+"\' style=\'margin-left:auto;padding:4px 10px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer\'>+ Add</button></div>";}
+    r.innerHTML=h;}catch(e){r.innerHTML="Search error.";}};
   x.send();}
-  if(!q)return;
-  var r=document.getElementById("searchResults");
-  r.innerHTML="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:4px'><span style='font-size:12px;color:var(--dim)'></span><span onclick='clearSearch()' style='cursor:pointer;color:var(--dim);font-size:14px' title='Clear'>✕</span></div><div class='r' style='color:var(--dim)'>Searching...</div>";
-  r.classList.add("show");
-  var x=new XMLHttpRequest();
-  x.open("GET","/api/steam/search?term="+encodeURIComponent(q),true);
-  x.onload=function(){
-    try{
-      var d=JSON.parse(x.responseText),items=d.items||[];
-      if(!items.length){r.innerHTML="<div class='r' style='color:var(--dim)'>No results.</div>";return;}
-      var h="";
-      for(var i=0;i<Math.min(items.length,10);i++){
-        var item=items[i];if(item.type!=="app"||!item.id)continue;
-        h+="<div class='r'><span class='nm'>"+item.name+" <small>(app "+item.id+")</small></span>";
-        h+="<button class='ad' data-id='"+item.id+"'>+ Add</button></div>";
-      }
-      r.innerHTML=h;
-    }catch(e){r.innerHTML="<div class='r' style='color:var(--dim)'>Error.</div>";}
-  };
-  x.send();
-}
 
 function addGame(id,name,btn){
   if(!id)return;
