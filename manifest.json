@@ -1,0 +1,16 @@
+{
+  "name": "iMac PC Games Compatibility",
+  "short_name": "GameCompat",
+  "description": "Check which PC games run on your iMac",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#161b22",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

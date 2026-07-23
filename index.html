@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iMac PC Games Compatibility</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#0a0c10;--bg2:#14161b;--bg3:#1c1f26;--border:#282c34;--text:#e1e4e8;--dim:#6e7681;--accent:#58a6ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{background:linear-gradient(135deg,#0d1117,#161b22);padding:20px 28px;border-bottom:1px solid var(--border)}
+header h1{font-size:22px;font-weight:700;margin-bottom:2px}
+header p{color:var(--dim);font-size:13px}
+header .bar{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+header .bar .s{font-size:12px;color:var(--dim);padding:3px 10px;border-radius:12px;background:var(--bg3);border:1px solid var(--border)}
+.ctrls{display:flex;gap:8px;padding:12px 28px;flex-wrap:wrap;align-items:center;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.ctrls input,.ctrls select{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--text);font-size:13px;outline:none}
+.ctrls input:focus,.ctrls select:focus{border-color:var(--accent)}
+.ctrls input{flex:1;min-width:160px}
+.ctrls select{min-width:100px;cursor:pointer}
+.ctrls label{font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;color:var(--dim)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;padding:16px 28px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.card .top{height:100px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;position:relative}
+.card .top img{width:100%;height:100%;object-fit:cover}
+.card .top .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:36px}
+.card .body{padding:14px}
+.card .body .hd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.card .body .hd .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase}
+.card .body .hd .sc{font-size:12px;font-weight:600}
+.card .body h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.card .body .meta{display:flex;gap:6px;font-size:11px;color:var(--dim);flex-wrap:wrap;margin-bottom:4px}
+.card .body .meta s{padding:1px 6px;border-radius:4px;background:var(--bg3)}
+.card .body .note{font-size:12px;color:var(--dim);margin-bottom:6px}
+.card .body .stores{display:flex;gap:4px;flex-wrap:wrap}
+.card .body .stores a{font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;color:#fff;text-decoration:none}
+.pg{display:flex;justify-content:center;align-items:center;gap:10px;padding:20px 28px}
+.pg button{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer;font-size:13px}
+.pg button:hover{background:var(--bg3);border-color:var(--accent)}
+.pg button:disabled{opacity:.4;cursor:default}
+.pg span{font-size:13px;color:var(--dim)}
+.empty{text-align:center;padding:60px;color:var(--dim)}
+.md{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:100;padding:20px}
+.md.active{display:flex}
+.md .box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:660px;width:100%;max-height:85vh;overflow-y:auto}
+.md .box .mh{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.md .box .mh h2{font-size:18px;margin-bottom:2px}
+.md .box .mh .sub{font-size:12px;color:var(--dim)}
+.md .box .mh .close{cursor:pointer;color:var(--dim);font-size:22px}
+.md .box .mb{padding:18px 22px}
+.md .box .mb .bs{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.md .box .mb .bs .n{font-size:32px;font-weight:700}
+.md .box .mb .bs .b{flex:1;height:10px;border-radius:5px;background:var(--bg3);overflow:hidden}
+.md .box .mb .bs .b .f{height:100%;border-radius:5px}
+.md .box .mb .ig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.md .box .mb .ig .g{display:flex;flex-direction:column}
+.md .box .mb .ig .g .l{font-size:10px;color:var(--dim);text-transform:uppercase}
+.md .box .mb .ig .g .v{font-size:14px}
+.md .box .mb .desc{font-size:14px;line-height:1.6;margin-bottom:14px}
+.md .box .mb .sr{font-size:13px;color:var(--dim);white-space:pre-wrap;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;max-height:180px;overflow-y:auto;line-height:1.5;margin-bottom:14px}
+.md .box .mb .cfg{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-x:auto}
+.md .box .mb .st{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap}
+.md .box .mb .st a{font-size:11px;padding:5px 14px;border-radius:6px;color:#fff;text-decoration:none}
+</style></head><body>
+<header>
+<h1>\ud83c\udfae iMac PC Games Compatibility</h1>
+<p id="subtitle">Loading <span id="gameCount">0</span> games...</p>
+<div class="bar" id="bar"></div>
+</header>
+<div class="ctrls">
+<input type="text" id="q" placeholder="Search..." oninput="A()">
+<select id="s" onchange="A()"><option value="sc">Score</option><option value="az">A-Z</option><option value="ny">Newest</option><option value="pop">Popular</option></select>
+<select id="ft" onchange="A()"><option value="">Tiers</option><option value="PLATINUM">PLATINUM</option><option value="GOLD">GOLD</option><option value="SILVER">SILVER</option><option value="BRONZE">BRONZE</option><option value="BROKEN">BROKEN</option></select>
+<select id="fd" onchange="A()"><option value="">DX</option><option value="D3D9">D3D9</option><option value="D3D11">D3D11</option><option value="D3D12">D3D12</option></select>
+<select id="ps" onchange="A()"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select>
+<label><input type="checkbox" id="hb" onchange="A()">Hide BROKEN</label>
+</div>
+<div class="grid" id="grid"></div>
+<div class="pg" id="pg"></div>
+<div class="empty" id="em" style="display:none">No games match.</div>
+<div class="md" id="modal"><div class="box"><div class="mh"><div><h2 id="mt"></h2><div class="sub" id="ms"></div></div><span class="close" onclick="cm()">\u2715</span></div><div class="mb" id="mb"></div></div></div>
+<script>
+var TC={PLATINUM:"#3fb950",GOLD:"#d29922",SILVER:"#58a6ff",BRONZE:"#f85149",BROKEN:"#484f58"};
+var G=[],P=1,Z=50,H=[],ID={};
+
+// Load games.json
+fetch("games.json").then(function(r){return r.json();}).then(function(d){
+  G=d.games;document.getElementById("gameCount").textContent=G.length;
+  // Detect machine
+  var mc=detectMachine();
+  document.getElementById("subtitle").textContent=mc.gpu+" | "+mc.ram+"GB RAM | WineD3D";
+  render();
+}).catch(function(e){document.getElementById("subtitle").textContent="Error loading games.json";});
+
+// Machine detection
+function detectMachine(){
+  var m={gpu:"Unknown GPU",ram:8,vram:2,cpu:"Unknown CPU"};
+  // WebGL GPU
+  try{var c=document.createElement("canvas");var gl=c.getContext("webgl")||c.getContext("experimental-webgl");
+    if(gl){var ext=gl.getExtension("WEBGL_debug_renderer_info");
+      if(ext){m.gpu=gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)||m.gpu;}}}
+  catch(e){}
+  // RAM via navigator (Chrome only)
+  if(navigator.deviceMemory)m.ram=navigator.deviceMemory;
+  // CPU cores
+  if(navigator.hardwareConcurrency)m.cpu=navigator.hardwareConcurrency+" cores";
+  // Try to detect Mac model
+  var ua=navigator.userAgent;
+  if(ua.indexOf("Mac")>=0){
+    m.gpu=m.gpu.replace("Apple M","Apple Silicon M");
+    if(ua.indexOf("Intel")>=0)m.gpu+=" (Intel)";
+  }
+  return m;
+}
+
+function sc(g){return{PLATINUM:100,GOLD:75,SILVER:50,BRONZE:25,BROKEN:5}[g.ti]||50}
+function F(){
+  var q=document.getElementById("q").value.toLowerCase(),ft=document.getElementById("ft").value,fd=document.getElementById("fd").value,hb=document.getElementById("hb").checked,sb=document.getElementById("s").value,r=[];
+  for(var i=0;i<G.length;i++){var g=G[i];if(hb&&g.ti==="BROKEN")continue;if(ft&&g.ti!==ft)continue;if(fd&&g.d!==fd)continue;if(q&&g.t.toLowerCase().indexOf(q)<0&&g.e.toLowerCase().indexOf(q)<0&&g.no.toLowerCase().indexOf(q)<0)continue;if(!H[i])H[i]=sc(g);r.push({i:i,g:g,v:H[i]});}
+  if(sb==="az")r.sort(function(a,b){return a.g.t.localeCompare(b.g.t)});else if(sb==="ny")r.sort(function(a,b){return b.g.y.localeCompare(a.g.y)});else if(sb==="pop")r.sort(function(a,b){return(b.g.s||"999999").localeCompare(a.g.s||"999999")});else r.sort(function(a,b){return b.v-a.v||(TC[a.g.ti]<TC[b.g.ti]?-1:1)});return r;
+}
+function B(){var b=document.getElementById("bar"),ts=["PLATINUM","GOLD","SILVER","BRONZE","BROKEN"],h="";for(var i=0;i<ts.length;i++){var c=0;for(var j=0;j<G.length;j++)if(G[j].ti===ts[i])c++;h+="<span class=\"s\" style=\"border-color:"+TC[ts[i]]+"\">"+ts[i]+": "+c+"</span>";}b.innerHTML=h;}
+function R(){
+  var a=F();Z=parseInt(document.getElementById("ps").value)||50;var t=Math.ceil(a.length/Z);if(P>t)P=t||1;var s=(P-1)*Z,p=a.slice(s,s+Z),gr=document.getElementById("grid"),em=document.getElementById("em");
+  if(!p.length){gr.innerHTML="";em.style.display="block";}else{em.style.display="none";var h="";for(var i=0;i<p.length;i++){var x=p[i],g=x.g,v=x.v;
+    var img=g.im?'<img src="'+g.im+'" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="ph" style="display:none;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>':'<div class="ph" style="display:flex;font-size:36px;color:'+TC[g.ti]+'">\ud83c\udfae</div>';
+    var st="";for(var k=0;k<g.st.length;k++)st+='<a href="'+g.st[k].u+'" target="_blank" style="background:'+g.st[k].c+'">'+g.st[k].n+"</a> ";
+    h+='<div class="card" data-i="'+x.i+'"><div class="top">'+img+'</div><div class="body">';
+    h+='<div class="hd"><span class="badge" style="background:'+TC[g.ti]+'22;color:'+TC[g.ti]+'">'+g.ti+'</span><span class="sc" style="color:'+TC[g.ti]+'">'+v+'/100</span></div>';
+    h+='<h3>'+g.t+'</h3><div class="meta"><s>'+g.d+'</s><s>'+g.e+'</s><s>'+g.y+'</s></div><div class="note">'+g.no+'</div><div class="stores">'+st+'</div></div></div>';}
+    gr.innerHTML=h;}
+  var pe=document.getElementById("pg");if(t<=1)pe.innerHTML="";else{pe.innerHTML='<button onclick="G('+(P-1)+')" '+(P<=1?"disabled":"")+'>\u2190 Prev</button><span>'+P+"/"+t+" ("+a.length+")</span><button onclick=\"G("+(P+1)+')\" '+(P>=t?"disabled":"")+'>Next \u2192</button>';}
+}
+function G(p){P=p;R();window.scrollTo({top:0,behavior:"smooth"});}
+function A(){P=1;R();}
+function D(i){var g=G[i];if(!g)return;var v=H[i]||sc(g);H[i]=v;
+  document.getElementById("mt").textContent=g.t;
+  document.getElementById("ms").textContent=g.ti+" \u00b7 "+g.d+" \u00b7 "+g.e+" \u00b7 "+g.y+" \u00b7 "+v+"/100";
+  var cfg="# "+g.t+" ("+v+"/100)\nwineport install \""+g.t+'\" /path/to/setup.exe\nwineport launch \"'+g.t+'\" --safe';
+  var st="<div class=\"st\">";for(var k=0;k<g.st.length;k++)st+='<a href="'+g.st[k].u+'" target="_blank" style="background:'+g.st[k].c+'">\u25b6 '+g.st[k].n+"</a> ";st+="</div>";
+  var desc=g.de||"No description available.";var reqs="";if(g.rm||g.rr){if(g.rm)reqs+="MINIMUM:\n"+g.rm;if(g.rr)reqs+="\n\nRECOMMENDED:\n"+g.rr;}else reqs="System requirements not available.";
+  document.getElementById("mb").innerHTML=
+    '<div class="bs"><span class="n" style="color:'+TC[g.ti]+'">'+v+'</span><span style="font-size:13px;color:var(--dim)">/100</span><div class="b"><div class="f" style="width:'+v+'%;background:'+TC[g.ti]+'"></div></div></div>'+
+    '<div class="ig"><div class="g"><span class="l">DirectX</span><span class="v">'+g.d+'</span></div><div class="g"><span class="l">Engine</span><span class="v">'+g.e+'</span></div>'+
+    '<div class="g"><span class="l">Year</span><span class="v">'+g.y+'</span></div><div class="g"><span class="l">Tier</span><span class="v" style="color:'+TC[g.ti]+'">'+g.ti+'</span></div>'+
+    (g.dv?'<div class="g"><span class="l">Developer</span><span class="v">'+g.dv+'</span></div>:"")+(g.pb?'<div class="g"><span class="l">Publisher</span><span class="v">'+g.pb+'</span></div>:"")+'</div>'+
+    '<div class="desc">'+desc+'</div><div class="sr">'+reqs+'</div><div class="cfg">'+cfg+'</div>'+st;
+  document.getElementById("modal").className="md active";
+}
+function cm(){document.getElementById("modal").className="md";}
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===e.currentTarget)cm();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")cm();});
+document.getElementById("grid").addEventListener("click",function(e){var c=e.target.closest(".card");if(c)D(parseInt(c.getAttribute("data-i")));});
+B();
+</script></body></html>
