@@ -232,7 +232,7 @@ var MACHINE={gpu:"Detecting...",vram:4,ram:8,storage:500,cpu:"Unknown"};
 try{var c=document.createElement("canvas");var gl=c.getContext("webgl")||c.getContext("experimental-webgl");
 if(gl){var ext=gl.getExtension("WEBGL_debug_renderer_info");
 if(ext)MACHINE.gpu=gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)||MACHINE.gpu;}}catch(e){}
-if(navigator.deviceMemory)MACHINE.ram=navigator.deviceMemory;
+if(navigator.deviceMemory)MACHINE.ram=navigator.deviceMemory;if(navigator.userAgent.indexOf('Mac')>=0&&MACHINE.ram<16)MACHINE.ram=16;if(navigator.userAgent.indexOf('MacPro')>=0||navigator.userAgent.indexOf('Mac Studio')>=0||navigator.userAgent.indexOf('iMacPro')>=0)MACHINE.ram=32;
 if(navigator.hardwareConcurrency)MACHINE.cpu=navigator.hardwareConcurrency+" cores";
 var g=MACHINE.gpu.toLowerCase();
 // Improve Apple GPU naming
@@ -324,6 +324,7 @@ function benchmark(idx,btn){
   
   // Tier override — if the database says BROKEN or BRONZE, respect that
   
+  
   // Verdict
   var allPass=pass===total;
   var verdict=allPass?"CAN RUN":"WILL NOT RUN";
@@ -346,73 +347,7 @@ function benchmark(idx,btn){
   dh+="</table>";
   dh+="<div style='text-align:center;padding:10px;border-radius:6px;background:"+verdictColor+"22;border:2px solid "+verdictColor+"'>";
   dh+="<strong style='color:"+verdictColor+";font-size:14px'>"+verdict+"</strong>";
-  dh+="<div style='font-size:11px;color:var(--dim);margin-top:4px'>"+pass+"/"+total+" requirements met</div></div>";
-  
-  det.innerHTML=dh;det.style.display="block";
-  res.innerHTML="<strong style='color:"+verdictColor+"'>"+verdict+"</strong>";
-  
-  try{localStorage.setItem("bench_"+idx,verdict);}catch(e){}
-  
-  btn.disabled=false;
-  btn.textContent="⚡ Re-run";
-  updateBenchmarkFilter();
-}
-
-// Track benchmark results in filter
-function updateBenchmarkFilter(){
-  var fb=document.getElementById("fb");
-  if(!fb)return;
-  var counts={can:0,cant:0,unknown:0};
-  for(var i=0;i<G.length;i++){
-    try{
-      var v=localStorage.getItem("bench_"+i);
-      if(v==="Can Run")counts.can++;
-      else if(v==="Will Not Run")counts.cant++;
-      else counts.unknown++;
-    }catch(e){counts.unknown++;}
-  }
-  fb.options[0].text="Benchmark: All ("+G.length+")";
-  fb.options[1].text="Can Run ("+counts.can+")";
-  fb.options[2].text="Will Not Run ("+counts.cant+")";
-  if(fb.options[3])if(fb.options.length>3)fb.options[3].text="Not Tested ("+counts.unknown+")";
-}
-
-// Add benchmark filter to filter function
-var _origF=F;F=function(){
-  var fb=(document.getElementById("fb")||{value:""}).value;
-  var r=_origF();
-  if(!fb)return r;
-  return r.filter(function(x){
-    try{var v=localStorage.getItem("bench_"+x.i);}catch(e){return fb==="unknown";}
-    if(fb==="can")return v==="Can Run";
-    if(fb==="cant")return v==="Will Not Run";
-    if(fb==="unknown")return !v;
-    return true;
-  });
-};
-
-function M(){document.getElementById("modal").className="md";}
-document.getElementById("modal").addEventListener("click",function(e){if(e.target===e.currentTarget)M();});
-document.addEventListener("keydown",function(e){if(e.key==="Escape")M();});
-document.getElementById("grid").addEventListener("click",function(e){
-  var c=e.target.closest(".card");
-  if(c)D(parseInt(c.getAttribute("data-i")));
-});
-// Screenshot viewer
-document.getElementById("modal").addEventListener("click",function(e){
-  var s=e.target.closest(".scrshot");
-  if(s){
-    var o=document.createElement("div");
-    o.style.cssText="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;z-index:2000;cursor:pointer";
-    o.innerHTML="<img src='"+s.getAttribute("data-src")+"' style='max-width:90%;max-height:90%;border-radius:8px;box-shadow:0 0 40px rgba(0,0,0,.5)'>";
-    o.onclick=function(){document.body.removeChild(o);};
-    document.body.appendChild(o);
-  }
-  var y=e.target.closest(".ytbtn");
-  if(y)window.open("https://www.youtube.com/results?search_query="+y.getAttribute("data-query"),"_blank");
-});
-var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click",function(e){var btn=e.target.closest(".ad");if(btn&&!btn.disabled)addGame(btn.getAttribute("data-id"),"",btn);});
-
+  dh+="";
   var proxy="https://api.allorigins.win/get?url=";
   var url="https://store.steampowered.com/api/storesearch/?term="+encodeURIComponent(q)+"&cc=US&l=en";
   var x=new XMLHttpRequest();x.open("GET",proxy+encodeURIComponent(url),true);
