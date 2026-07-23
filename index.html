@@ -227,6 +227,13 @@ function D(i){
   document.getElementById("modal").className="md active";
 }
 
+function cm(){document.getElementById("modal").className="md";}
+var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click",function(e){var btn=e.target.closest(".ad");if(btn&&!btn.disabled)addGame(btn.getAttribute("data-id"),"",btn);});
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===e.currentTarget)cm();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")cm();});
+document.getElementById("grid").addEventListener("click",function(e){var c=e.target.closest(".card");if(c)D(parseInt(c.getAttribute("data-i")));});
+document.getElementById("pg").addEventListener("click",function(e){var btn=e.target.closest(".pgbtn");if(btn&&!btn.disabled)goPage(parseInt(btn.getAttribute("data-p")));});
+
 // Machine specs for benchmark
 var MACHINE={gpu:"Detecting...",vram:4,ram:8,storage:500,cpu:"Unknown"};
 try{var c=document.createElement("canvas");var gl=c.getContext("webgl")||c.getContext("experimental-webgl");
