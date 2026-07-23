@@ -323,7 +323,6 @@ function benchmark(idx,btn){
   add("OS","Windows","macOS + Wine 11.0",true);
   
   // Tier override — if the database says BROKEN or BRONZE, respect that
-  if(g.ti==="BROKEN"||g.ti==="BRONZE"){pass=0;total=1;add("Curated Tier",g.ti+" — known incompatible","Cannot run on this GPU",false);}
   
   // Verdict
   var allPass=pass===total;
@@ -414,12 +413,6 @@ document.getElementById("modal").addEventListener("click",function(e){
 });
 var sr=document.getElementById("searchResults");if(sr)sr.addEventListener("click",function(e){var btn=e.target.closest(".ad");if(btn&&!btn.disabled)addGame(btn.getAttribute("data-id"),"",btn);});
 
-function clearSearch(){var as=document.getElementById("addSearch");var sr=document.getElementById("searchResults");if(as)as.value="";if(sr){sr.innerHTML="";sr.classList.remove("show");}}
-
-
-function searchSteam(){var as=document.getElementById("addSearch");if(!as)return;var q=as.value.trim();if(!q)return;
-  var r=document.getElementById("searchResults");if(!r)return;
-  r.style.display="block";r.innerHTML="<div style=\'color:var(--dim);padding:8px\'>Searching...</div>";
   var proxy="https://api.allorigins.win/get?url=";
   var url="https://store.steampowered.com/api/storesearch/?term="+encodeURIComponent(q)+"&cc=US&l=en";
   var x=new XMLHttpRequest();x.open("GET",proxy+encodeURIComponent(url),true);
